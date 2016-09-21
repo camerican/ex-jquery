@@ -13,35 +13,60 @@ $(document).on("ready",function(){
 //   }
 // });
 
+  // $.ajax({
+  //   type: "GET",
+  //   url: "http://api.spotify.com/v1/search",
+  //   data: {
+  //     q: "Beatles",
+  //     type: "artist"
+  //   },
+  //   crossDomain: true,
+  //   success: function(data) {
+  //     // console.log(data.artists.items);
+  //     data.artists.items.forEach(function(c,i){
+  //       if( c.images[0] && c.images.length ) {
+  //         //console.log( i, c.images[0].url );
+  //         $(".container").append('<img class="spotify-img" src="'+
+  //           c.images[0].url + '" />');
+  //       }
+  //     });
+  //   }
+  // });
+
   $.ajax({
     type: "GET",
-    url: "http://api.spotify.com/v1/search",
-    data: {
-      q: "Beatles",
-      type: "artist"
-    },
-    success: function(data) {
-      // console.log(data.artists.items);
-      data.artists.items.forEach(function(c,i){
-        if( c.images[0] && c.images.length ) {
-          //console.log( i, c.images[0].url );
-          $(".container").append('<img class="spotify-img" src="'+
-            c.images[0].url + '" />');
+    url: "http://art-share.herokuapp.com/api/v1/users/",
+    success: function(data){
+      console.log( data );
+      // we want to output a series
+      // of list items for each user
+      // to the ordered list that lives
+      // as a direct child within 
+      // the .other_container
+      data.result.filter(function(person,index,list){
+        if( list.slice(0,index).filter(
+          function(i_person){
+            return i_person.fname == person.fname && i_person.lname == person.lname;
+          }).length > 0 ) {
+          return false;
         }
+        return true;
+      }).forEach(function(person){
+        $(".other_container > ol").append('<li><a href="mailto:'+ person.email + '">' + person.fname + ' ' + person.lname + '</a></li>' );
       });
-
+      
     }
   });
-
+//data returned is: result (Array) -> Object[fname,lname,id,email]
 
 //  $("h1").hide();
   $("h1").slideUp(4000);
 //  $(".box.hidden").show();
   $(".box.hidden").slideDown(4000);
 
-  boxBigger();
-  pulse("h1");
-  pulse(".box");
+  // boxBigger();
+  // pulse("h1");
+  // pulse(".box");
 }); // end DOM Content Loaded
 
 // // Alternate Style of calling animate
